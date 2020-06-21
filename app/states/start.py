@@ -26,6 +26,5 @@ class StartState(AbstractState):
 
         registrar.register_message_handler(
             self.handle_start_command,
-            commands=["start"],
-            user_id=650535775
+            commands=["start"]
         )
