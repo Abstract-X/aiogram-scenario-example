@@ -41,10 +41,34 @@ async def _handle_arithmetic_operator(update: Message, bot: Bot, fsm_context: FS
     )
 
 
+async def handle_addition_reply_button(update: Message, bot: Bot, fsm_context: FSMContext):
+
+    await _handle_arithmetic_operator(update, bot, fsm_context, "+")
+
+
+async def handle_subtraction_reply_button(update: Message, bot: Bot, fsm_context: FSMContext):
+
+    await _handle_arithmetic_operator(update, bot, fsm_context, "-")
+
+
+async def handle_multiplication_reply_button(update: Message, bot: Bot, fsm_context: FSMContext):
+
+    await _handle_arithmetic_operator(update, bot, fsm_context, "*")
+
+
+async def handle_division_reply_button(update: Message, bot: Bot, fsm_context: FSMContext):
+
+    await _handle_arithmetic_operator(update, bot, fsm_context, "/")
+
+
+async def handle_back_reply_button(_, fsm: FSMPointer):
+
+    await fsm.go_back()
+
+
 class RequestOperatorState(AbstractState):
 
-    @classmethod
-    async def process_transition(cls, update: Message, bot: Bot) -> None:
+    async def process_transition(self, update: Message, bot: Bot) -> None:
 
         await bot.send_message(
             chat_id=update.from_user.id,
@@ -52,54 +76,29 @@ class RequestOperatorState(AbstractState):
             reply_markup=resources.reply_keyboards.make_selecting_arithmetic_operator_keyboard()
         )
 
-    @classmethod
-    async def handle_addition_reply_button(cls, update: Message, bot: Bot, fsm_context: FSMContext):
-
-        await _handle_arithmetic_operator(update, bot, fsm_context, "+")
-
-    @classmethod
-    async def handle_subtraction_reply_button(cls, update: Message, bot: Bot, fsm_context: FSMContext):
-
-        await _handle_arithmetic_operator(update, bot, fsm_context, "-")
-
-    @classmethod
-    async def handle_multiplication_reply_button(cls, update: Message, bot: Bot, fsm_context: FSMContext):
-
-        await _handle_arithmetic_operator(update, bot, fsm_context, "*")
-
-    @classmethod
-    async def handle_division_reply_button(cls, update: Message, bot: Bot, fsm_context: FSMContext):
-
-        await _handle_arithmetic_operator(update, bot, fsm_context, "/")
-
-    @classmethod
-    async def handle_back_reply_button(cls, update: Message, fsm: FSMPointer):
-
-        await fsm.go_back()
-
     def register_handlers(self, registrar: StateRegistrar) -> None:
 
         registrar.register_message_handler(
-            self.handle_back_reply_button,
+            handle_back_reply_button,
             text=resources.text.BACK_REPLY_BUTTON
         )
 
         registrar.register_message_handler(
-            self.handle_addition_reply_button,
+            handle_addition_reply_button,
             text=resources.text.ADDITION_REPLY_BUTTON
         )
 
         registrar.register_message_handler(
-            self.handle_subtraction_reply_button,
+            handle_subtraction_reply_button,
             text=resources.text.SUBTRACTION_REPLY_BUTTON
         )
 
         registrar.register_message_handler(
-            self.handle_multiplication_reply_button,
+            handle_multiplication_reply_button,
             text=resources.text.MULTIPLICATION_REPLY_BUTTON
         )
 
         registrar.register_message_handler(
-            self.handle_division_reply_button,
+            handle_division_reply_button,
             text=resources.text.DIVISION_REPLY_BUTTON
         )

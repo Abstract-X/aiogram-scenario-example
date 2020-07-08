@@ -29,6 +29,21 @@ async def _handle_number_message(update: Message, bot: Bot, fsm: FSMPointer, fsm
         await fsm.go_next()
 
 
+async def handle_first_number_message(update: Message, bot: Bot, fsm: FSMPointer, fsm_context: FSMContext):
+
+    await _handle_number_message(update, bot, fsm, fsm_context, "first_number")
+
+
+async def handle_second_number_message(update: Message, bot: Bot, fsm: FSMPointer, fsm_context: FSMContext):
+
+    await _handle_number_message(update, bot, fsm, fsm_context, "second_number")
+
+
+async def handle_back_reply_button(_, fsm: FSMPointer):
+
+    await fsm.go_back()
+
+
 class RequestFirstNumberState(AbstractState):
 
     @classmethod
@@ -40,22 +55,16 @@ class RequestFirstNumberState(AbstractState):
             reply_markup=resources.reply_keyboards.make_cancel_keyboard()
         )
 
-    @classmethod
-    async def handle_first_number_message(cls, update: Message, bot: Bot, fsm: FSMPointer, fsm_context: FSMContext):
-
-        await _handle_number_message(update, bot, fsm, fsm_context, "first_number")
-
     def register_handlers(self, registrar: StateRegistrar) -> None:
 
         registrar.register_message_handler(
-            self.handle_first_number_message
+            handle_first_number_message
         )
 
 
 class RequestSecondNumberState(AbstractState):
 
-    @classmethod
-    async def process_transition(cls, update: Message, bot: Bot) -> None:
+    async def process_transition(self, update: Message, bot: Bot) -> None:
 
         await bot.send_message(
             chat_id=update.from_user.id,
@@ -63,23 +72,13 @@ class RequestSecondNumberState(AbstractState):
             reply_markup=resources.reply_keyboards.make_back_and_cancel_keyboard()
         )
 
-    @classmethod
-    async def handle_second_number_message(cls, update: Message, bot: Bot, fsm: FSMPointer, fsm_context: FSMContext):
-
-        await _handle_number_message(update, bot, fsm, fsm_context, "second_number")
-
-    @classmethod
-    async def handle_back_reply_button(cls, update: Message, fsm: FSMPointer):
-
-        await fsm.go_back()
-
     def register_handlers(self, registrar: StateRegistrar) -> None:
 
         registrar.register_message_handler(
-            self.handle_back_reply_button,
+            handle_back_reply_button,
             text=resources.text.BACK_REPLY_BUTTON
         )
 
         registrar.register_message_handler(
-            self.handle_second_number_message
+            handle_second_number_message
         )

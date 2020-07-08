@@ -5,10 +5,19 @@ from aiogram.types import Message
 from app import resources
 
 
+async def handle_echo_message(update: Message, bot: Bot, fsm: FSMPointer):
+
+    await bot.send_message(
+        chat_id=update.from_user.id,
+        text=update.text
+    )
+
+    await fsm.go_next()
+
+
 class RequestEchoMessageState(AbstractState):
 
-    @classmethod
-    async def process_transition(cls, update: Message, bot: Bot) -> None:
+    async def process_transition(self, update: Message, bot: Bot) -> None:
 
         await bot.send_message(
             chat_id=update.from_user.id,
@@ -16,18 +25,8 @@ class RequestEchoMessageState(AbstractState):
             reply_markup=resources.reply_keyboards.make_cancel_keyboard()
         )
 
-    @classmethod
-    async def handle_echo_message(cls, update: Message, bot: Bot, fsm: FSMPointer):
-
-        await bot.send_message(
-            chat_id=update.from_user.id,
-            text=update.text
-        )
-
-        await fsm.go_next()
-
     def register_handlers(self, registrar: StateRegistrar) -> None:
 
         registrar.register_message_handler(
-            self.handle_echo_message
+            handle_echo_message
         )
