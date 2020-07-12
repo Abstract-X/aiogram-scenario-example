@@ -1,5 +1,5 @@
 # aiogram-scenario-example
-This repository contains bot code written using `aiogram-scenario` (0.2.0).
+This repository contains bot code written using `aiogram-scenario` (0.2.1).
 ## Launching
 - Install the required libraries for work:
 ``` bash
@@ -11,6 +11,6 @@ BOT_TOKEN = ...  # insert your token here
 ```
 - Run using Python:
 ``` bash
-$ python __main__.py
+$ python -m app
 ```
 - Write to your bot «/start»!
